@@ -50,11 +50,15 @@
         const searchBox = document.getElementById("city");
         const searchBtn = document.getElementById("btn");
 
-        document.querySelector(".city").innerHTML = localStorage.getItem("cityL");
-        document.querySelector(".temp").innerHTML = localStorage.getItem("tempL");
-        document.querySelector(".data").innerHTML = localStorage.getItem("dataL");
-        document.querySelector(".opad").innerHTML = localStorage.getItem("opadL");
-        document.querySelector(".cis").innerHTML = localStorage.getItem("cisL");
+        if (localStorage.getItem("cityL") === null) {
+            document.querySelector(".weather").style.display = "none";
+        } else {
+            document.querySelector(".city").innerHTML = localStorage.getItem("cityL");
+            document.querySelector(".temp").innerHTML = localStorage.getItem("tempL");
+            document.querySelector(".data").innerHTML = localStorage.getItem("dataL");
+            document.querySelector(".opad").innerHTML = localStorage.getItem("opadL");
+            document.querySelector(".cis").innerHTML = localStorage.getItem("cisL");
+        }
 
         async function checkWeather(city) {
             const response = await fetch(apiUrl + city);
