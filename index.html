@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pl">
+  
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pogoda</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+  
+<body>
+    <div class="container">
+        <div class="search">
+            <select name="city" id="city">
+                <option disabled selected hidden value></option>
+                <option value="kielce">Kielce</option>
+                <option value="krakow">Kraków</option>
+                <option value="lublin">Lublin</option>
+            </select>
+            <button id="btn">Wyszukaj</button>
+        </div>
+        <div class="error">
+            <p>Najpierw musisz wybrać miasto!</p>
+        </div>
+        <div class="weather">
+            <h1 class="temp"></h1>
+            <h2 class="city"></h2>
+            <p class="data"></p>
+            <div class="stats">
+                <div class="column">
+                    <img src="images/rainy.png" alt="">
+                    <div> 
+                        <p class="opad"></p>
+                        <p>Opady</p>
+                    </div>
+                </div>
+                <div class="column">
+                    <img src="images/down-arrow.png" alt="">
+                    <div>
+                        <p class="cis"></p>
+                        <p>Ciśnienie</p>
+                    </div>
+                </div>          
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = "https://danepubliczne.imgw.pl/api/data/synop/station/";
+        const searchBox = document.getElementById("city");
+        const searchBtn = document.getElementById("btn");
+
+        document.querySelector(".city").innerHTML = localStorage.getItem("cityL");
+        document.querySelector(".temp").innerHTML = localStorage.getItem("tempL");
+        document.querySelector(".data").innerHTML = localStorage.getItem("dataL");
+        document.querySelector(".opad").innerHTML = localStorage.getItem("opadL");
+        document.querySelector(".cis").innerHTML = localStorage.getItem("cisL");
+
+        async function checkWeather(city) {
+            const response = await fetch(apiUrl + city);
+
+            if(searchBox.value==0){
+                document.querySelector(".error").style.display = "block";
+                document.querySelector(".weather").style.display = "none";
+            } else {
+                var data = await response.json();
+
+                document.querySelector(".city").innerHTML = data.stacja;
+                document.querySelector(".temp").innerHTML = data.temperatura + "°C";
+                document.querySelector(".data").innerHTML = data.data_pomiaru;
+                document.querySelector(".opad").innerHTML = data.suma_opadu + " mm";
+                document.querySelector(".cis").innerHTML = data.cisnienie + " hPa";
+
+                const cityL = data.stacja;
+                const tempL = data.temperatura + "°C";
+                const dataL = data.data_pomiaru;
+                const opadL = data.suma_opadu + " mm";
+                const cisL = data.cisnienie + " hPa";
+
+                localStorage.setItem('cityL', cityL);
+                localStorage.setItem('tempL', tempL);
+                localStorage.setItem('dataL', dataL);
+                localStorage.setItem('opadL', opadL);
+                localStorage.setItem('cisL', cisL);
+
+                document.querySelector(".error").style.display = "none";
+                document.querySelector(".weather").style.display = "block";
+            }
+ 
+        }
+
+        searchBtn.addEventListener("click", ()=>{
+            checkWeather(searchBox.value);
+        })
+
+    </script>
+
+</body>
+  
+</html>
